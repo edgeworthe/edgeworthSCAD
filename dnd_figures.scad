@@ -8,10 +8,7 @@ $fn=100;
 
 // D&D 1-inch base
 module base() {
-    rotate_extrude(angle=360) {
-        polygon(points=[[0,0], [12.7,0], 
-                        [11.5,2.5], [0,2.5]]);
-    }
+    cylinder(h=2.5,d1=25.4,d2=23);
 }
 
 meeple_xmid = 7;
@@ -260,17 +257,21 @@ module alpha_reinforce(id) {
     base();
 }
 
-for(i=[0:9]) {
-    x=15+30*(i%3);
-    y=15+30*floor(i/3);
-    if(i!=0 && i!=4 && i!=6 && i!=8 && i!=9) {
-        translate([x,y]) alpha_plain(str(i));
-    } else {
-        translate([x,y]) alpha_reinforce(str(i));
+module all_figures() {
+    for(i=[0:9]) {
+        x=15+30*(i%3);
+        y=15+30*floor(i/3);
+        if(i!=0 && i!=4 && i!=6 && i!=8 && i!=9) {
+            translate([x,y]) alpha_plain(str(i));
+        } else {
+            translate([x,y]) alpha_reinforce(str(i));
+        }
     }
+    translate([105,15]) cleric();
+    translate([105,45]) rogue();
+    translate([105,75]) warrior();
+    translate([105,105]) wizard();
+    translate([75, 105]) archer();
 }
-translate([105,15]) cleric();
-translate([105,45]) rogue();
-translate([105,75]) warrior();
-translate([105,105]) wizard();
-translate([75, 105]) archer();
+
+all_figures();
