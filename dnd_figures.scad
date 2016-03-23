@@ -214,27 +214,22 @@ module wizard() {
     }
 }
 
-module alpha_plain(id) {
-    scale_meeple_with_base() {
-        difference() {
-            basic_meeple();
-            translate([meeple_xmid-2,meeple_ymid-3])
-                text(id, size=5,
-                    font="Liberation Mono:style=Bold");
+module single_digit_logo(id) {
+    logo_font="Liberation Mono:style=Bold";
+    digits_needing_reinforcement=[0,4,6,8,9];
+    translate([meeple_xmid-2,meeple_ymid-3]) difference() {
+        text(str(id), size=5, font=logo_font);
+        if(search(id, digits_needing_reinforcement)) {
+            translate([1.7,-1]) square([0.75,6]);
         }
     }
 }
 
-module alpha_reinforce(id) {
+module single_digit_meeple(id) {
     scale_meeple_with_base() {
         difference() {
             basic_meeple();
-            translate([meeple_xmid-2,meeple_ymid-3])
-            difference() {
-                text(id, size=5,
-                    font="Liberation Mono:style=Bold");
-                translate([1.7,-1]) square([0.75,6]);
-            }
+            single_digit_logo(id);
         }
     }
 }
@@ -243,11 +238,7 @@ module all_figures() {
     for(i=[0:9]) {
         x=15+30*(i%3);
         y=15+30*floor(i/3);
-        if(i!=0 && i!=4 && i!=6 && i!=8 && i!=9) {
-            translate([x,y]) alpha_plain(str(i));
-        } else {
-            translate([x,y]) alpha_reinforce(str(i));
-        }
+        translate([x,y]) single_digit_meeple(i);
     }
     translate([105,15]) cleric();
     translate([105,45]) rogue();
