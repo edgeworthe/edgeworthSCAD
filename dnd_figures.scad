@@ -14,18 +14,20 @@ module base() {
 meeple_xmid = 7;
 meeple_ymid = 7.5;
 meeple_width = 3;
+
 module head() {
     translate([meeple_xmid,12,0])
         circle(3);
 }
+
+module leg_gap() {
+    polygon(points=[[6,0],[8,0],[meeple_xmid,2]]);
+}
+
 module legs() {
     difference() {
-        polygon(points=[[0,0],
-                        [14,0],
-                        [meeple_xmid,15]]);
-        polygon(points=[[6,0],
-                        [8,0],
-                        [meeple_xmid,2]]);
+        polygon(points=[[0,0],[14,0],[meeple_xmid,15]]);
+        leg_gap();
     }
 }
 
@@ -71,9 +73,8 @@ module hammer() {
 
 module wizard_logo() {
     translate([meeple_xmid,meeple_ymid+1.5])
-    scale([1.25,1])
-    rotate(a=10)
-        polygon(points=[[0,2],
+        scale([1.25,1]) rotate(a=10)
+            polygon(points=[[0,2],
                         [1,-3], [0,-2],
                         [0,-5], [-1,-4],
                         [-1,-7], [-2,-2],
@@ -83,14 +84,11 @@ module wizard_logo() {
 
 module staff() {
     square([1.1,meeple_ymid*2-1]);
-    translate([0.55,meeple_ymid*2-1.3])
-        circle(1.3);
+    translate([0.55,meeple_ymid*2-1.3]) circle(1.3);
 }
 
 module robe() {
-    polygon(points=[[6,0],
-                    [8,0],
-                    [meeple_xmid,2]]);
+    leg_gap();
 }
 
 module wizard_hat() {
@@ -121,7 +119,7 @@ module shield() {
 
 module axe() {
     square([1.1,meeple_ymid*2-1.5]);
-        translate([0.55,meeple_ymid*2-3]) 
+    translate([0.55,meeple_ymid*2-3]) 
         difference() {
             circle(3);
             union() {
@@ -140,81 +138,72 @@ module bow() {
 }
 
 module arrow() {
-    translate([meeple_xmid+3,meeple_ymid]) rotate(a=90) scale([1.5,1.5,1]) {
-        square([0.5,4]);
-        translate([-0.25,3.75])
-            polygon([[0,0],[0.5,0.1],[1,0],
-                     [0.5,1]]);
-        for(i=[0:2]) {
-            translate([0.25,i*0.6+0.35]) rotate(a=225)
-                polygon([[0,0], [0,0.85], 
-                         [0.25,0.85], [0.25,0.25],
-                         [0.85,0.25], [0.85,0]]);
-        }
+    translate([meeple_xmid+3,meeple_ymid]) 
+        rotate(a=90) scale([1.5,1.5,1]) {
+            square([0.5,4]);
+            translate([-0.25,3.75])
+                polygon([[0,0],[0.5,0.1],[1,0],
+                         [0.5,1]]);
+            for(i=[0:2]) {
+                translate([0.25,i*0.6+0.35]) rotate(a=225)
+                    polygon([[0,0], [0,0.85], 
+                             [0.25,0.85], [0.25,0.25],
+                             [0.85,0.25], [0.85,0]]);
+            }
     }
 }
 
-module archer() {
+module scale_meeple_with_base() {
     scale([1.25,1,1.25])
-    translate([-meeple_xmid,meeple_width/2,2]) 
-        rotate (a=[90,0,0]) 
-    linear_extrude(height=meeple_width) {
+        translate([-meeple_xmid,meeple_width/2,2]) 
+            rotate (a=[90,0,0]) 
+                linear_extrude(height=meeple_width)
+                    children();
+    base();
+}
+
+module archer() {
+    scale_meeple_with_base() {
         difference() {
             basic_meeple();
             arrow();
         }
         bow();
     }
-    base();
 }
 
 module cleric() {
-    scale([1.25,1,1.25])
-    translate([-meeple_xmid,meeple_width/2,2]) 
-        rotate (a=[90,0,0]) 
-    linear_extrude(height=meeple_width) {
+    scale_meeple_with_base() {
         difference() {
             basic_meeple();
             red_cross();
         }
         hammer();
     }
-    base();
 }
 
 module rogue() {
-    scale([1.25,1,1.25])
-    translate([-meeple_xmid,meeple_width/2,2]) 
-        rotate (a=[90,0,0]) 
-    linear_extrude(height=meeple_width) {
+    scale_meeple_with_base() {
         difference() {
             basic_meeple();
             keyhole();
         }
         daggers();
     }
-    base();
 }
 
 module warrior() {
-    scale([1.25,1,1.25])
-    translate([-meeple_xmid,meeple_width/2,2]) 
-        rotate (a=[90,0,0]) 
-            linear_extrude(height=meeple_width) {
+    scale_meeple_with_base() {
         difference() {
             basic_meeple();
             shield();
         }
         axe();
     }
-    base();
 }
 
 module wizard() {
-    scale([1.25,1,1.25])
-    translate([-meeple_xmid,meeple_width/2,2]) 
-        rotate (a=[90,0,0]) 
-    linear_extrude(height=meeple_width) {
+    scale_meeple_with_base() {
         difference() {
             basic_meeple();
             wizard_logo();
@@ -223,38 +212,31 @@ module wizard() {
         staff();
         robe();
     }
-    base();
 }
 
 module alpha_plain(id) {
-    scale([1.25,1,1.25])
-    translate([-meeple_xmid,meeple_width/2,2]) 
-        rotate (a=[90,0,0]) 
-    linear_extrude(height=meeple_width) {
+    scale_meeple_with_base() {
         difference() {
             basic_meeple();
             translate([meeple_xmid-2,meeple_ymid-3])
-                text(id, size=5, font="Liberation Mono:style=Bold");
+                text(id, size=5,
+                    font="Liberation Mono:style=Bold");
         }
     }
-    base();
 }
 
 module alpha_reinforce(id) {
-    scale([1.25,1,1.25])
-    translate([-meeple_xmid,meeple_width/2,2]) 
-        rotate (a=[90,0,0]) 
-    linear_extrude(height=meeple_width) {
+    scale_meeple_with_base() {
         difference() {
             basic_meeple();
             translate([meeple_xmid-2,meeple_ymid-3])
             difference() {
-                text(id, size=5, font="Liberation Mono:style=Bold");
+                text(id, size=5,
+                    font="Liberation Mono:style=Bold");
                 translate([1.7,-1]) square([0.75,6]);
             }
         }
     }
-    base();
 }
 
 module all_figures() {
