@@ -1,6 +1,6 @@
 $fn=100;
 module base() {
-    cylinder(h=2.5,d1=25.4,d2=23);
+    cylinder(h=2.5,d1=25,d2=23);
 }
 
 module head() {
@@ -8,11 +8,12 @@ module head() {
     translate([0,0,40-head_radius]) sphere(head_radius);
 }
 
-module pyramid_figure() {
+module old_pyramid_figure() {
     polyhedron(points=[[-10,0,0],[0,-10,0],
                        [10,0,0], [0,10,0],
                        [0,0,35]],
-               faces=[[0,1,4],[1,2,4],[2,3,4],[0,3,4]]);
+               faces=[[0,1,4],[1,2,4],[2,3,4],[3,0,4],
+                      [0,1,2,3]]);
     shoulder_height=33;
     shoulder_width=5.75;
     polyhedron(points=[[-shoulder_width,0,shoulder_height],
@@ -21,7 +22,7 @@ module pyramid_figure() {
                        [0,shoulder_width,shoulder_height],
                        [0,0,10]],
                faces=[[0,1,4],[1,2,4],[2,3,4],[0,3,4],
-                      [0,1,2],[0,2,3]]);
+                      [0,2,3],[0,1,2]]);
 }
 
 module identifier(id) {
@@ -37,12 +38,47 @@ module dual_identifier(id) {
     rotate(a=180) identifier(id);
 }
 
-module figure() {
+module old_figure() {
     translate([0,0,2.5]) {
         head();
         translate([-7,1.5,24]) scale([1,1,1.75]) 
             rotate(a=[90,45,0]) cube([10,10,3]);
-        rotate(a=[0,0,45]) pyramid_figure();
+        rotate(a=[0,0,45]) old_pyramid_figure();
+    }
+    base();
+}
+
+module pyramid_figure() {
+    base_coord=7;
+    waist_height=22;
+    waist_coord=2.5;
+    shoulder_height=33;
+    shoulder_width=4.5;
+    polyhedron(points=[[-base_coord,-base_coord,0],
+                       [base_coord,-base_coord,0],
+                       [base_coord,base_coord,0],
+                       [-base_coord,base_coord,0],
+                       [-waist_coord,-waist_coord,waist_height],
+                       [waist_coord,-waist_coord,waist_height],
+                       [waist_coord,waist_coord,waist_height],
+                       [-waist_coord,waist_coord,waist_height],
+                       [-shoulder_width,-shoulder_width,shoulder_height],
+                       [shoulder_width,-shoulder_width,shoulder_height],
+                       [shoulder_width,shoulder_width,shoulder_height],
+                       [-shoulder_width,shoulder_width,shoulder_height]
+                       ],
+               faces=[[0,1,2,3],
+                      [0,4,5,1],[5,4,8,9],[1,5,6,2],[6,5,9,10],
+                      [3,2,6,7],[7,6,10,11],[0,3,7,4],[4,7,11,8],
+                      [11,10,9,8]
+                      ]);
+}
+
+module figure() {
+    translate([0,0,2.5]) {
+        head();
+        translate([-7,1.5,24]) scale([1,1,1.75]) rotate(a=[90,45,0]) cube([10,10,3]);
+        pyramid_figure();
     }
     base();
 }
@@ -58,8 +94,4 @@ module figures() {
     }
 }
 
-translate([45,105]) {
-    figure();
-    dual_identifier("e");
-}
 figures();
