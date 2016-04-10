@@ -215,20 +215,20 @@ module monk_stance() {
 
 module challenger_stance() {
     full_body(
-        [0,10,0], // head: tilt, nod, rotate
+        [0,-5,0], // head: tilt, nod, rotate
         [1,1],   // fists
         [[0,0,0],[0,0,0]], // hands
         [[0,95,0],[0,95,0]], // lower_arm
-        [[0,45,90],[0,45,-90]], // upper_arm
+        [[5,45,90],[-5,45,-90]], // upper_arm
     
-        [0,10,0], // torso
+        [0,-5,0], // torso
         [0,0,0], // pelvis
     
-        [[10,-10,0],[-10,-10,0]], // upper_leg
+        [[10,-5,0],[-10,-5,0]], // upper_leg
         [[0,20,0],[0,20,0]], // lower_leg
-        [[-10,-10,0],[10,-10,0]], // foot
+        [[-10,-15,0],[10,-15,0]], // foot
         [0, [20,-35]] // base foot translation
     );
 }
 
-sample_model();
+challenger_stance();
