@@ -94,12 +94,12 @@ module robe() {
 module wizard_hat() {
         translate([meeple_xmid,13.5,0]) {        
             scale([3.5,1]) circle(1);
-            rotate(a=25)
-                difference() {
-                    scale([2,4.5]) circle(1);
-                    translate([-2.75,3.5]) circle(2.25);
-                }
+            hull() {
+                translate([-1.25,4]) circle(0.5);
+                translate([0,-0.5]) circle(2.5);
+            }
         }
+
 }
 
 module shield() {
